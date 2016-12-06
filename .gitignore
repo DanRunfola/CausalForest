@@ -1,0 +1,7 @@
+.DS_Store
+.vagrant
+*.Rproj
+.Rhistory
+.Rproj.user
+.RData
+.Ruserdata

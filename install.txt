@@ -1,0 +1,39 @@
+
+
+1. Install conda: http://conda.pydata.org/docs/install/quick.html
+        bash Miniconda3-latest-Linux-x86_64.sh
+2. Install scikit learn:
+        conda install scikit-learn
+3. Install cython:  pip install cython
+4. pip install nose
+5. make
+    cd /scikit
+    make
+    then same as compile any other source code
+    you can check scikit learn developer page for more details
+6. python setup.py install
+
+-------------------
+
+cd /path/to/repo
+vagrant up
+vagrant ssh
+
+-------------------
+
+sudo apt-get update
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+bash Miniconda2-latest-Linux-x86_64.sh -b
+miniconda2/bin/conda install -y scikit-learn
+sudo apt-get install -y python-pip python-dev
+sudo pip install --upgrade pip
+sudo pip install Cython nose numpy pandas
+sudo apt-get install python-scipy
+
+cd /vagrant/scikit-learn
+make
+python setup.py build
+sudo python setup.py install
+
+-------------------
+

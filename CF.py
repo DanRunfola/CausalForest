@@ -1,15 +1,19 @@
 import os
 import sys
 
+base = "/home/aiddata/Desktop/Github/CausalForest"
+if os.environ.get('USER') == "vagrant":
+    base = "/vagrant"
 
-sys.path.append("/home/aiddata/Desktop/Github/CausalForest/scikit-learn")
-sys.path.insert(0,"/home/aiddata/miniconda2/lib/python2.7/site-packages/")
+sys.path.append(base + "/scikit-learn")
+sys.path.insert(0, os.path.expanduser("~/miniconda2/lib/python2.7/site-packages/"))
 
-import pandas as pd
-from sklearn import tree
+
 import csv
-import numpy as np 
 import random
+import pandas as pd
+import numpy as np
+from sklearn import tree
 
 csvpath = str(sys.argv[1])
 c_var = str(sys.argv[2])
@@ -19,16 +23,16 @@ out_file = str(sys.argv[5])
 
   # #Propensity
   # exec.str <- paste("pscore.Calc <- matchit(", p.eq,",data= pVars,method='nearest',distance='logit')",sep="")
-  # 
+  #
   # eval(parse(text=exec.str))
-  # 
-  # 
+  #
+  #
   # matched.dta <- match.data(pscore.Calc)
-  # 
+  #
   # #Set 0 and 1 cases to small values to prevent division by 0 issues
   # for(i in 1:length(matched.dta['distance'][[1]]))
   # {
-  # 
+  #
   #   if(matched.dta['distance'][[1]][i] >= 0.99)
   #   {
   #     matched.dta['distance'][[1]][i] = 0.99
@@ -38,8 +42,8 @@ out_file = str(sys.argv[5])
   #     matched.dta['distance'][[1]][i] = .01
   #   }
   # }
-  # 
-  # 
+  #
+  #
   # #Tree propensity calculations
   # transDist <- list(rep(0,nrow(matched.dta)))
   # for(i in 1:nrow(matched.dta))
@@ -57,7 +61,7 @@ out_file = str(sys.argv[5])
   # }
   # matched.dta$distance <- unlist(transDist)
 
- 
+
 c_var = c_var.split(",")
 
 full_dta = pd.read_csv(csvpath, header=0)
@@ -71,15 +75,15 @@ sample_weight = full_dta[p_var]
 
 X = X._get_numeric_data()
 
-names = X.columns.values 
+names = X.columns.values
 row_num = X.shape[0]
 col_num = X.shape[1]
 feature_num_ratio = 0.8
 forest_size = 100000
 res = [0]*len(Y)
 feature_importance = [0]*col_num
- 
- 
+
+
 def featureImpCal(tree, feature_importance):
   left = tree.tree_.children_left
   right = tree.tree_.children_right
@@ -88,16 +92,16 @@ def featureImpCal(tree, feature_importance):
   for nodeid in range(0,len(left)):
     if features[nodeid] >= 0:
       feature_importance[features[nodeid]] += value[nodeid] - value[left[nodeid]] - value[right[nodeid]]
- 		
+
 resultFile = open(out_file,'wb')
 wr = csv.writer(resultFile, delimiter=',')
- 	
- 
+
+
 for i in range(0,forest_size):
   print("Building Tree ID:")
   print(i)
   res = [0]*len(Y)
-  idx = np.random.choice(Y.index.values, int(0.8*row_num), replace=False) 
+  idx = np.random.choice(Y.index.values, int(0.8*row_num), replace=False)
   model = tree.DecisionTreeRegressor(criterion='ct', splitter='random',max_features = feature_num_ratio,min_samples_leaf = 25, overlap_samples=0.2)
   fitres = model.fit(np.array(X.iloc[idx], dtype=None),np.array(Y.iloc[idx], dtype=None),np.array(sample_weight.iloc[idx], dtype=None))
   pred = model.predict(np.array(X.iloc[idx], dtype=None))
@@ -106,18 +110,18 @@ for i in range(0,forest_size):
   wr.writerow(res)
 
 featureImpCal(model, feature_importance)
- 
+
 s = feature_importance
 idx = sorted(range(len(s)), key=lambda k: s[k],reverse=True)
 names[idx]
 
- 
+
 impurity_res = [0]*col_num
 for i in range(0,col_num):
  	impurity_res[i] = s[idx[i]]
- 
+
 r2 = zip(names[idx],impurity_res)
 print(r2)
-# 
-# 
-# 
+#
+#
+#
