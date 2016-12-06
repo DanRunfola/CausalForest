@@ -2,6 +2,6 @@
 .vagrant
 *.Rproj
 .Rhistory
-.Rproj.user
+.Rproj.user/
 .RData
 .Ruserdata
