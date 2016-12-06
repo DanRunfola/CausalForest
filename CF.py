@@ -20,47 +20,7 @@ c_var = str(sys.argv[2])
 o_var = str(sys.argv[3])
 p_var = str(sys.argv[4])
 out_file = str(sys.argv[5])
-
-  # #Propensity
-  # exec.str <- paste("pscore.Calc <- matchit(", p.eq,",data= pVars,method='nearest',distance='logit')",sep="")
-  #
-  # eval(parse(text=exec.str))
-  #
-  #
-  # matched.dta <- match.data(pscore.Calc)
-  #
-  # #Set 0 and 1 cases to small values to prevent division by 0 issues
-  # for(i in 1:length(matched.dta['distance'][[1]]))
-  # {
-  #
-  #   if(matched.dta['distance'][[1]][i] >= 0.99)
-  #   {
-  #     matched.dta['distance'][[1]][i] = 0.99
-  #   }
-  #   if(matched.dta['distance'][[1]][i] <= 0.01)
-  #   {
-  #     matched.dta['distance'][[1]][i] = .01
-  #   }
-  # }
-  #
-  #
-  # #Tree propensity calculations
-  # transDist <- list(rep(0,nrow(matched.dta)))
-  # for(i in 1:nrow(matched.dta))
-  # {
-  #   if(matched.dta$treatment[i] == 1)
-  #   {
-  #     #Treated
-  #     transDist[i] = matched.dta$distance[i]
-  #   }
-  #   else
-  #   {
-  #     #Untreated
-  #     transDist[i] = -1 * matched.dta$distance[i]
-  #   }
-  # }
-  # matched.dta$distance <- unlist(transDist)
-
+tree_cnt = str(sys.argv[6])
 
 c_var = c_var.split(",")
 
@@ -79,7 +39,7 @@ names = X.columns.values
 row_num = X.shape[0]
 col_num = X.shape[1]
 feature_num_ratio = 0.8
-forest_size = 100000
+forest_size = int(tree_cnt)
 res = [0]*len(Y)
 feature_importance = [0]*col_num
 
