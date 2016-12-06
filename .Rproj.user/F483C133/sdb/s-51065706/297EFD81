@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#Causal Forest Python Implementation\ncausal.forest <- function(dta,c.vars,o.var, t.var, out.file)\n{\n  python.path <- \"/home/aiddata/Desktop/Github/CausalForest/CF.py\"\n  #Create a temporary CSV out of the dataframe to pass into CF.\n  csv.str <- tempfile(fileext=\".csv\")\n  \n  #Standardize outcome and treatment names\n  out <- dta[o.var]\n  trt <- dta[t.var]\n  dta <- dta[!(names(dta) %in% c(o.var,t.var))]\n  dta$outcome <- out[[1]]\n  dta$treatment <- trt[[1]]\n  \n  \n  #Match and calculate propensity scores.\n\n  #Remove any names that don't exist in c.vars, warn user.\n  if(length(c.vars[!c.vars%in%names(dta) > 0]))\n  {\n    warning(paste(\"Some specified variables do not exist in the dataframe, and are being removed:\",\n                  paste(c.vars[!c.vars%in%names(dta)],collapse=\" , \")))\n    c.vars <- c.vars[c.vars%in%names(dta)]\n  }\n  \n  \n  pVars <- dta[c(c.vars,\"treatment\",\"outcome\")]\n  \n  #Take complete cases.\n  pVars <- na.omit(pVars)\n  \n  p.eq <- paste(\"treatment ~ \", paste(c.vars, collapse=\"+\"))\n  \n  #Propensity\n  exec.str <- paste(\"pscore.Calc <- matchit(\", p.eq,\",data= pVars,method='nearest',distance='logit')\",sep=\"\")\n\n  eval(parse(text=exec.str))\n\n  \n  matched.dta <- match.data(pscore.Calc)\n  \n  #Set 0 and 1 cases to small values to prevent division by 0 issues\n  for(i in 1:length(matched.dta['distance'][[1]]))\n  {\n\n    if(matched.dta['distance'][[1]][i] >= 0.99)\n    {\n      matched.dta['distance'][[1]][i] = 0.99\n    }\n    if(matched.dta['distance'][[1]][i] <= 0.01)\n    {\n      matched.dta['distance'][[1]][i] = .01\n    }\n  }\n\n\n  #Tree propensity calculations\n  transDist <- list(rep(0,nrow(matched.dta)))\n  for(i in 1:nrow(matched.dta))\n  {\n    if(matched.dta$treatment[i] == 1)\n    {\n      #Treated\n      transDist[i] = matched.dta$distance[i]\n    }\n    else\n    {\n      #Untreated\n      transDist[i] = -1 * matched.dta$distance[i]\n    }\n  }\n  matched.dta$distance <- unlist(transDist)\n  \n  write.csv(matched.dta, csv.str)\n  \n  c.vars.pass = paste(c.vars, collapse=\",\")\n  p.var = \"distance\"\n  sys.call.str <- paste(\"python\", python.path, csv.str, c.vars.pass, \"outcome\", \"distance\", out.file) \n  tree.resp <- system(sys.call.str, intern=TRUE)\n  purity <- tail(tree.resp, n=1)\n  print(purity)\n} ",
+    "created" : 1481036441860.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3722286793",
+    "id" : "297EFD81",
+    "lastKnownWriteTime" : 1479499939,
+    "last_content_update" : 1479499939,
+    "path" : "~/Desktop/Github/GEF_MFA/Analyses/causal_forest.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
