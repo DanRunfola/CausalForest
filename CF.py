@@ -4,9 +4,10 @@ import sys
 base = "/home/aiddata/Desktop/Github/CausalForest"
 if os.environ.get('USER') == "vagrant":
     base = "/vagrant"
+    print "Running on VM"
 
 sys.path.append(base + "/scikit-learn")
-sys.path.insert(0, os.path.expanduser("~/miniconda2/lib/python2.7/site-packages/"))
+# sys.path.insert(0, os.path.expanduser("~/miniconda2/lib/python2.7/site-packages/"))
 
 
 import csv
