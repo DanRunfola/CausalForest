@@ -3,10 +3,11 @@
 # -------------------
 # set up vm and access it
 
-cd /path/to/repo
-vagrant up
-vagrant ssh
+# cd /path/to/repo
+# vagrant up
+# vagrant ssh
 
+# -------------------
 # -------------------
 # prep vm with scikit and python
 
@@ -56,13 +57,12 @@ sudo Rscript -e 'install.packages("ggplot2", repos="http://cran.us.r-project.org
 
 sudo apt-get install -y git
 
-active_dir=$(date +%Y%m%d_%s)
 cd /vagrant
-mkdir -p run/$active_dir
-rm -rf run/$active_dir
-git clone https://github.com/itpir/geoML.git run/$active_dir
+rm -rf run/geoML
+mkdir -p run/{geoML,results}
+git clone https://github.com/itpir/geoML.git /vagrant/run/geoML
 
 # -------------------
-# run
+# -------------------
+# run your own code that utilizes geoML / CausalForest
 
-# Rscript run/$active_dir/geoML.R
