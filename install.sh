@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # -------------------
 # set up vm and access it
