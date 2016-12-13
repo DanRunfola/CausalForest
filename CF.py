@@ -3,7 +3,7 @@ import sys
 
 base = "/home/aiddata/Desktop/Github/CausalForest"
 if os.environ.get('USER') == "vagrant":
-    base = "/vagrant"
+    base = "/home/vagrant/CausalForest"
     print "Running on VM"
 
 sys.path.append(base + "/scikit-learn")
